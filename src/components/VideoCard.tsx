@@ -1,4 +1,3 @@
-import IosShareRoundedIcon from '@mui/icons-material/IosShareRounded';
 import LaunchRoundedIcon from '@mui/icons-material/LaunchRounded';
 import PlayCircleOutlineRoundedIcon from '@mui/icons-material/PlayCircleOutlineRounded';
 import {
@@ -19,7 +18,6 @@ import type { VideoMetadata } from '../types/video';
 import {
   buildChatLink,
   buildEmbedCode,
-  buildShareUrl,
   formatVideoDate,
 } from '../utils/video';
 
@@ -81,28 +79,9 @@ export const VideoCard = ({
   const { isReady, percentLoaded, status } = useResourceStatus({
     resource: video.qdn,
   });
-  const shareUrl = buildShareUrl(video);
   const embedCode = buildEmbedCode(video);
   const chatLink = buildChatLink(video);
   const thumbnailUrl = canUseThumbnail(video.thumbnailUrl) ? video.thumbnailUrl : undefined;
-
-  const handleCopyShare = async () => {
-    try {
-      await navigator.clipboard.writeText(shareUrl);
-      setFeedback({
-        message: 'Share link copied.',
-        severity: 'success',
-      });
-    } catch (caughtError) {
-      setFeedback({
-        message:
-          caughtError instanceof Error
-            ? caughtError.message
-            : 'Could not copy share link.',
-        severity: 'error',
-      });
-    }
-  };
 
   const handleCopyEmbed = async () => {
     try {
@@ -262,14 +241,6 @@ export const VideoCard = ({
                 borderTop: '1px solid rgba(255,255,255,0.08)',
               }}
             >
-              <Button
-                size="small"
-                onClick={handleCopyShare}
-                startIcon={<IosShareRoundedIcon />}
-              >
-                Share Link
-              </Button>
-
               <Button
                 size="small"
                 onClick={handleCopyEmbed}

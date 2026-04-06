@@ -21,6 +21,7 @@ const fetchText = async (path) => {
 };
 
 const query = (selector) => document.querySelector(selector);
+const createDetailPath = (videoId) => `./video.html?id=${encodeURIComponent(videoId)}`;
 
 const escapeHtml = (value) =>
   value
@@ -87,6 +88,7 @@ const renderHome = async () => {
   container.innerHTML = postsWithContent
     .map((post) => {
       const video = videosById.get(post.videoId);
+      const detailPath = createDetailPath(post.videoId);
 
       return `
         <article class="post-card">
@@ -96,8 +98,11 @@ const renderHome = async () => {
               <h3>${escapeHtml(post.title)}</h3>
               ${post.contentHtml}
               <div class="meta-row">
-                <a class="button button-primary" href="./video.html?id=${encodeURIComponent(post.videoId)}">
+                <a class="button button-primary" href="${detailPath}">
                   Open Detail View
+                </a>
+                <a class="button button-secondary" href="${detailPath}">
+                  Share Link
                 </a>
                 <a class="button button-secondary" href="./gallery.html">
                   Browse Gallery
@@ -124,7 +129,10 @@ const renderGallery = async () => {
 
   container.innerHTML = videos
     .map(
-      (video) => `
+      (video) => {
+        const detailPath = createDetailPath(video.id);
+
+        return `
         <article class="gallery-card">
           ${createVideoMarkup(video, { controls: true })}
           <div class="card-copy">
@@ -135,13 +143,17 @@ const renderGallery = async () => {
             <p>${escapeHtml(video.excerpt || '')}</p>
             ${renderMetaChips(video)}
             <div class="meta-row">
-              <a class="button button-primary" href="./video.html?id=${encodeURIComponent(video.id)}">
+              <a class="button button-primary" href="${detailPath}">
                 View Details
+              </a>
+              <a class="button button-secondary" href="${detailPath}">
+                Share Link
               </a>
             </div>
           </div>
         </article>
-      `
+      `;
+      }
     )
     .join('');
 };
@@ -168,6 +180,7 @@ const renderVideoDetail = async () => {
   }
 
   const embedCode = `<video controls preload="metadata" src="${video.qdnPath}" style="width: 100%; max-width: 960px; border-radius: 12px; background: #000;"></video>`;
+  const detailPath = createDetailPath(video.id);
 
   container.innerHTML = `
     <article class="detail-card">
@@ -188,7 +201,8 @@ const renderVideoDetail = async () => {
           <pre>${escapeHtml(embedCode)}</pre>
         </div>
         <div class="embed-actions">
-          <a class="button button-primary" href="./gallery.html">Back to Gallery</a>
+          <a class="button button-primary" href="${detailPath}">Share Link</a>
+          <a class="button button-secondary" href="./gallery.html">Back to Gallery</a>
           <a class="button button-secondary" href="./index.html">Back to Home</a>
         </div>
       </div>
