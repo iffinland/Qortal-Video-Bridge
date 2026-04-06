@@ -23,14 +23,12 @@ import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { useHelperMonitor } from '../hooks/useHelperMonitor';
 import { useVideoPublish } from '../hooks/useVideoPublish';
 import type { VideoMetadata, VideoTranscodePreset } from '../types/video';
-import {
-  VIDEO_IDENTIFIER_PREFIX,
-  type VideoTranscodePresetOption,
-} from '../types/video';
+import { type VideoTranscodePresetOption } from '../types/video';
 import {
   deleteVideoResources,
   publishVideoMetadataResource,
 } from '../utils/metadata';
+import { loadPublishedVideos } from '../utils/qdnVideoLibrary';
 import { VideoCard } from './VideoCard';
 
 const EditVideoDialog = lazy(async () => ({
@@ -51,7 +49,8 @@ const extractVideoFingerprint = (value: string) => {
   }
 };
 
-const DASHBOARD_PAGE_SIZE = 9;
+const FEATURED_VIDEO_COUNT = 2;
+const LIBRARY_PAGE_SIZE = 10;
 
 const TRANSCODE_PRESET_OPTIONS: VideoTranscodePresetOption[] = [
   {
@@ -70,9 +69,6 @@ const TRANSCODE_PRESET_OPTIONS: VideoTranscodePresetOption[] = [
     description: 'Higher bitrate and frame size for premium releases.',
   },
 ];
-
-const isManagedVideo = (video: VideoMetadata) =>
-  video.identifier.startsWith(`${VIDEO_IDENTIFIER_PREFIX}-`);
 
 interface DashboardListItemProps {
   onDelete: (video: VideoMetadata) => Promise<void>;
@@ -102,32 +98,6 @@ const DashboardListItem = ({
       visibilityBusy={visibilityBusy}
     />
   );
-};
-
-interface SearchResourceResult {
-  identifier: string;
-  name: string;
-  service: 'JSON';
-}
-
-const parseFetchedVideo = (value: unknown): VideoMetadata | null => {
-  if (!value) {
-    return null;
-  }
-
-  if (typeof value === 'string') {
-    try {
-      return JSON.parse(value) as VideoMetadata;
-    } catch {
-      return null;
-    }
-  }
-
-  if (typeof value === 'object') {
-    return value as VideoMetadata;
-  }
-
-  return null;
 };
 
 const Uploader = () => {
@@ -183,18 +153,29 @@ const Uploader = () => {
         (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
   }, [deletedVideoIds, libraryVideos, visibilityFilter]);
-  const totalPages = Math.max(1, Math.ceil(visibleDashboardVideos.length / DASHBOARD_PAGE_SIZE));
+  const featuredDashboardVideos = useMemo(
+    () => visibleDashboardVideos.slice(0, FEATURED_VIDEO_COUNT),
+    [visibleDashboardVideos]
+  );
+  const paginatedLibraryVideos = useMemo(
+    () => visibleDashboardVideos.slice(FEATURED_VIDEO_COUNT),
+    [visibleDashboardVideos]
+  );
+  const totalPages =
+    paginatedLibraryVideos.length > 0
+      ? Math.max(1, Math.ceil(paginatedLibraryVideos.length / LIBRARY_PAGE_SIZE))
+      : 0;
   const currentPageIdentifiers = useMemo(
     () =>
       new Set(
-        visibleDashboardVideos
+        paginatedLibraryVideos
           .slice(
-            (page - 1) * DASHBOARD_PAGE_SIZE,
-            (page - 1) * DASHBOARD_PAGE_SIZE + DASHBOARD_PAGE_SIZE
+            (page - 1) * LIBRARY_PAGE_SIZE,
+            (page - 1) * LIBRARY_PAGE_SIZE + LIBRARY_PAGE_SIZE
           )
           .map((video) => video.identifier)
       ),
-    [page, visibleDashboardVideos]
+    [page, paginatedLibraryVideos]
   );
   const currentPageCount = currentPageIdentifiers.size;
 
@@ -203,7 +184,7 @@ const Uploader = () => {
   }, [visibilityFilter]);
 
   useEffect(() => {
-    if (page > totalPages) {
+    if (totalPages > 0 && page > totalPages) {
       setPage(totalPages);
     }
   }, [page, totalPages]);
@@ -287,55 +268,17 @@ const Uploader = () => {
       setIsLoadingLibrary(true);
 
       try {
-        const resources = (await qortalRequest({
-          action: 'SEARCH_QDN_RESOURCES',
-          service: 'JSON',
-          includeMetadata: true,
-          limit: 24,
-          mode: 'LATEST',
-          name: primaryName,
-        })) as SearchResourceResult[];
-        const managedResources = (resources || []).filter((resource) =>
-          resource.identifier.startsWith(`${VIDEO_IDENTIFIER_PREFIX}-`)
-        );
-        const fetchedVideos = await Promise.allSettled(
-          managedResources.map(async (resource) => {
-            const response = await qortalRequest({
-              action: 'FETCH_QDN_RESOURCE',
-              service: 'JSON',
-              name: resource.name,
-              identifier: resource.identifier,
-            });
-
-            return parseFetchedVideo(response);
-          })
-        );
+        const result = await loadPublishedVideos(primaryName);
 
         if (cancelled) {
           return;
         }
 
-        const nextKnownVideos = fetchedVideos.reduce<Record<string, VideoMetadata>>(
-          (accumulator, video) => {
-            if (video.status !== 'fulfilled' || !video.value || !isManagedVideo(video.value)) {
-              return accumulator;
-            }
+        setKnownVideos(result.videos);
 
-            const current = accumulator[video.value.identifier];
-
-            if (
-              !current ||
-              new Date(video.value.createdAt).getTime() > new Date(current.createdAt).getTime()
-            ) {
-              accumulator[video.value.identifier] = video.value;
-            }
-
-            return accumulator;
-          },
-          {}
-        );
-
-        setKnownVideos(nextKnownVideos);
+        if (import.meta.env.DEV) {
+          console.info('[Uploader] loadKnownVideos results', result.debug);
+        }
       } catch {
         if (!cancelled) {
           setKnownVideos({});
@@ -459,7 +402,7 @@ const Uploader = () => {
             <Typography variant="h3">Qortal Video Bridge</Typography>
 
             <Typography variant="body1" sx={{ maxWidth: 760, opacity: 0.88 }}>
-              Import YouTube videos to QDN from your own computer. Paste a source URL,
+              Import YouTube videos to QDN from your own NODE. Paste a source URL,
               let your local helper transcode it to AV1 and Opus, then approve the
               Qortal publish flow.
             </Typography>
@@ -701,8 +644,8 @@ const Uploader = () => {
             <Box>
               <Typography variant="h5">Your video library</Typography>
               <Typography variant="body2" color="text.secondary">
-                Manage uploads, preview published videos, and decide what appears on
-                your creator dashboard.
+                See your newest uploads first, then browse the rest of your creator
+                library with pagination.
               </Typography>
             </Box>
 
@@ -710,7 +653,6 @@ const Uploader = () => {
               <Chip label={`Loaded: ${libraryVideos.length}`} />
               <Chip label={`Public: ${publicCount}`} color="info" />
               <Chip label={`Private: ${privateCount}`} color="warning" />
-              <Chip label={`Pages: ${totalPages}`} />
               <Chip
                 label={
                   visibilityFilter === 'all'
@@ -729,26 +671,29 @@ const Uploader = () => {
               </Typography>
             ) : isLoadingLibrary ? (
               <Typography color="text.secondary">
-                Loading your latest published videos...
+                Loading your published videos...
               </Typography>
             ) : visibleDashboardVideos.length === 0 ? (
               <Typography color="text.secondary">
                 No published videos found yet. Import your first YouTube video to populate this library.
               </Typography>
             ) : (
-              <Box
-                sx={{
-                  display: 'grid',
-                  gap: 18,
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-                }}
-              >
-                {visibleDashboardVideos
-                  .slice(
-                    (page - 1) * DASHBOARD_PAGE_SIZE,
-                    (page - 1) * DASHBOARD_PAGE_SIZE + DASHBOARD_PAGE_SIZE
-                  )
-                  .map((video) => (
+              <Stack spacing={2.5}>
+                <Box>
+                  <Typography variant="h6">Latest videos</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Your two most recent processed videos stay visible at the top for quick access.
+                  </Typography>
+                </Box>
+
+                <Box
+                  sx={{
+                    display: 'grid',
+                    gap: 18,
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+                  }}
+                >
+                  {featuredDashboardVideos.map((video) => (
                     <DashboardListItem
                       key={video.identifier}
                       video={video}
@@ -759,13 +704,50 @@ const Uploader = () => {
                       visibilityBusy={updatingVisibilityId === video.identifier}
                     />
                   ))}
-              </Box>
+                </Box>
+
+                {paginatedLibraryVideos.length > 0 ? (
+                  <>
+                    <Box>
+                      <Typography variant="h6">Full library</Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Older videos remain available here so you can reopen, edit, or reuse them later.
+                      </Typography>
+                    </Box>
+
+                    <Box
+                      sx={{
+                        display: 'grid',
+                        gap: 18,
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+                      }}
+                    >
+                      {paginatedLibraryVideos
+                        .slice(
+                          (page - 1) * LIBRARY_PAGE_SIZE,
+                          (page - 1) * LIBRARY_PAGE_SIZE + LIBRARY_PAGE_SIZE
+                        )
+                        .map((video) => (
+                          <DashboardListItem
+                            key={video.identifier}
+                            video={video}
+                            onDelete={handleDeleteVideo}
+                            onEdit={setEditingVideo}
+                            onToggleVisibility={handleToggleVisibility}
+                            deleteBusy={deletingVideoId === video.identifier}
+                            visibilityBusy={updatingVisibilityId === video.identifier}
+                          />
+                        ))}
+                    </Box>
+                  </>
+                ) : null}
+              </Stack>
             )}
           </Stack>
         </CardContent>
       </Card>
 
-      {visibleDashboardVideos.length > 0 ? (
+      {paginatedLibraryVideos.length > 0 ? (
         <Card sx={{ borderRadius: 4 }}>
           <CardContent sx={{ p: { xs: 2, md: 2.5 } }}>
             <Stack
@@ -776,7 +758,7 @@ const Uploader = () => {
             >
               <Typography variant="body2" color="text.secondary">
                 Page {page} of {totalPages}. Showing {currentPageCount} video
-                {currentPageCount === 1 ? '' : 's'} on this page.
+                {currentPageCount === 1 ? '' : 's'} from your full library on this page.
               </Typography>
 
               <Pagination
