@@ -16,6 +16,7 @@ dist-ssr
 .env.production
 server/.env
 .codex
+release/output
 
 # Editor directories and files
 .vscode/*
