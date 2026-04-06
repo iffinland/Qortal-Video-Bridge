@@ -1,0 +1,16 @@
+[Unit]
+Description=VideoBox Bridge helper server
+After=network.target
+
+[Service]
+Type=simple
+User=YOUR_USER
+WorkingDirectory=/home/YOUR_USER/videobox-bridge
+Environment=PORT=3001
+Environment=DEFAULT_TRANSCODE_PRESET=balanced
+ExecStart=/usr/bin/npm run server
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

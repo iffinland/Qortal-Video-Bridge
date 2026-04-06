@@ -1,0 +1,214 @@
+@font-face {
+  font-family: 'Inter';
+  src: url('./styles/fonts/Inter-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./styles/fonts/Inter-ExtraBold.ttf') format('truetype');
+  font-weight: 800;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('./styles/fonts/Inter-Bold.ttf') format('truetype');
+  font-weight: 700;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('./styles/fonts/Inter-Regular.ttf') format('truetype');
+  font-weight: 400;
+}
+
+:root {
+  line-height: 1.2;
+  padding: 0px;
+  margin: 0px;
+  box-sizing: border-box;
+  font-family: 'Inter';
+  color: #f3f6fb;
+  background:
+    radial-gradient(circle at top left, rgba(198, 40, 40, 0.18), transparent 30%),
+    radial-gradient(circle at top right, rgba(32, 90, 163, 0.2), transparent 34%),
+    linear-gradient(180deg, #273447 0%, #202d3f 52%, #1b2635 100%);
+  --vb-bg: #202d3f;
+  --vb-surface: rgba(34, 45, 61, 0.84);
+  --vb-surface-strong: rgba(26, 36, 50, 0.94);
+  --vb-border: rgba(255, 255, 255, 0.08);
+  --vb-text-main: #f3f6fb;
+  --vb-text-soft: rgba(235, 240, 247, 0.74);
+  --vb-blue: #2f79c8;
+  --vb-blue-soft: rgba(47, 121, 200, 0.18);
+  --vb-red: #cf4952;
+  --vb-red-soft: rgba(207, 73, 82, 0.18);
+  --vb-gold: #dca85a;
+  --vb-card-glow: 0 24px 50px rgba(4, 10, 22, 0.26);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--vb-text-main);
+  background: var(--vb-bg);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.MuiPaper-root,
+.MuiCard-root {
+  backdrop-filter: blur(12px);
+}
+
+.MuiCard-root {
+  border: 1px solid var(--vb-border);
+  box-shadow: var(--vb-card-glow);
+  transition:
+    transform 180ms ease,
+    box-shadow 200ms ease,
+    border-color 200ms ease,
+    background-color 200ms ease;
+}
+
+.MuiCard-root:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 28px 56px rgba(6, 12, 24, 0.3);
+}
+
+.MuiButton-root {
+  text-transform: none !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.01em;
+  border-radius: 14px !important;
+  transition:
+    transform 150ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    opacity 180ms ease !important;
+}
+
+.MuiButton-root:hover {
+  transform: translateY(-1px);
+}
+
+.MuiButton-root:active {
+  transform: translateY(1px) scale(0.985);
+}
+
+.MuiButton-contained {
+  box-shadow: 0 16px 30px rgba(13, 23, 42, 0.32) !important;
+}
+
+.MuiButton-contained:hover {
+  box-shadow: 0 20px 36px rgba(13, 23, 42, 0.38) !important;
+}
+
+.MuiButton-text,
+.MuiButton-outlined {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.03));
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 10px 22px rgba(8, 14, 28, 0.18);
+}
+
+.MuiButton-text:hover,
+.MuiButton-outlined:hover {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.05));
+}
+
+.MuiChip-root {
+  border-radius: 999px !important;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+  box-shadow: 0 10px 20px rgba(8, 14, 28, 0.14);
+  transition:
+    transform 150ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease !important;
+}
+
+.MuiChip-clickable:hover,
+.MuiChip-root:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 14px 24px rgba(8, 14, 28, 0.18);
+}
+
+.MuiChip-clickable:active,
+.MuiChip-root:active {
+  transform: translateY(1px) scale(0.985);
+}
+
+.MuiIconButton-root {
+  transition:
+    transform 150ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease !important;
+}
+
+.MuiIconButton-root:hover {
+  transform: translateY(-1px);
+}
+
+.MuiIconButton-root:active {
+  transform: translateY(1px) scale(0.985);
+}
+
+.MuiFilledInput-root,
+.MuiOutlinedInput-root {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 12px 22px rgba(7, 13, 26, 0.16);
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease !important;
+}
+
+.MuiFilledInput-root:hover,
+.MuiOutlinedInput-root:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.MuiFilledInput-root.Mui-focused,
+.MuiOutlinedInput-root.Mui-focused {
+  border-color: rgba(47, 121, 200, 0.44);
+  box-shadow:
+    0 0 0 3px rgba(47, 121, 200, 0.14),
+    0 16px 30px rgba(7, 13, 26, 0.22);
+}
+
+@keyframes vbPulseFlow {
+  0% {
+    box-shadow: 0 0 0 rgba(207, 73, 82, 0.18);
+    transform: translateY(0);
+    filter: saturate(1);
+  }
+  50% {
+    box-shadow: 0 0 24px rgba(207, 73, 82, 0.22), 0 0 34px rgba(47, 121, 200, 0.16);
+    transform: translateY(-1px);
+    filter: saturate(1.08);
+  }
+  100% {
+    box-shadow: 0 0 0 rgba(207, 73, 82, 0.18);
+    transform: translateY(0);
+    filter: saturate(1);
+  }
+}
+
+.vb-support-pulse {
+  animation: vbPulseFlow 3.8s ease-in-out infinite;
+}
