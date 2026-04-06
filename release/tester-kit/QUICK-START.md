@@ -22,21 +22,16 @@ yt-dlp --version
 
 ## 2. Open the Helper Folder
 
-Inside the helper package run:
+Go into the helper folder inside the tester kit:
 
 ```bash
+cd helper
 npm install
 ```
 
-## 3. Create Environment Files
+## 3. Create the Helper Environment File
 
-Frontend:
-
-```bash
-cp .env.example .env
-```
-
-Helper:
+In the `helper/` folder run:
 
 ```bash
 cp server/.env.example server/.env
@@ -64,15 +59,21 @@ DOWNLOAD_TTL_MS=1800000
 
 ## 5. Start the Helper
 
-In the project root:
+From inside `helper/` run:
 
 ```bash
 npm run server
 ```
 
-Check the helper:
+Or from the tester-kit root run:
 
 ```bash
+./start-helper.sh
+```
+
+Check the helper:
+
+```text
 http://127.0.0.1:3001/health
 ```
 
@@ -80,7 +81,15 @@ The helper should report that both `yt-dlp` and `ffmpeg` are available.
 
 ## 6. Publish the q-app
 
-Publish the provided `dist/` folder to your local Qortal node.
+Do not run `npm run build` inside the tester kit.
+
+The tester kit already includes a ready build.
+
+Publish this folder to your local Qortal node:
+
+```text
+app/dist
+```
 
 ## 7. Open the App
 

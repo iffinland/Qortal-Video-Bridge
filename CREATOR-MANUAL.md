@@ -30,6 +30,12 @@ The system has two required parts:
 - the q-app frontend published from `dist/`
 - the local helper started from this repository
 
+In the packaged tester kit this becomes:
+
+- publish the ready frontend from `tester-kit/app/dist`
+- start the helper from `tester-kit/helper`
+- or use `tester-kit/start-helper.sh`
+
 The frontend alone is not enough. Real video processing happens in the helper through:
 
 - `yt-dlp`

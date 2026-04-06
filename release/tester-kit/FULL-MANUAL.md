@@ -35,19 +35,27 @@ yt-dlp --version
 
 ## Frontend Configuration
 
-Create the frontend env file:
+The tester kit already includes a prebuilt frontend in:
 
-```bash
-cp .env.example .env
+```text
+app/dist
 ```
 
-Expected value:
+You do not need to run `npm run build` inside the tester kit.
 
-```env
-VITE_VIDEO_HELPER_URL=http://127.0.0.1:3001
+The packaged frontend already points to:
+
+```text
+http://127.0.0.1:3001
 ```
 
 ## Helper Configuration
+
+Open the `helper/` directory first:
+
+```bash
+cd helper
+```
 
 Create the helper env file:
 
@@ -86,11 +94,17 @@ DOWNLOAD_TTL_MS=1800000
 
 ## Starting the Helper
 
-Run from the repository root:
+Run from inside the `helper/` folder:
 
 ```bash
 npm install
 npm run server
+```
+
+Or, from the tester-kit root, run:
+
+```bash
+./start-helper.sh
 ```
 
 The helper should listen on:
@@ -113,13 +127,11 @@ Expected result:
 
 ## Publishing the q-app
 
-Build the frontend:
+Publish this included directory to your local Qortal node:
 
-```bash
-npm run build
+```text
+app/dist
 ```
-
-Publish the `dist/` directory to your local Qortal node.
 
 ## First Use Flow
 
@@ -215,7 +227,7 @@ These can all be changed in `server/.env`.
 
 - confirm `npm run server` is still running
 - check `http://127.0.0.1:3001/health`
-- confirm `.env` points to `http://127.0.0.1:3001`
+- confirm the published app is the packaged `app/dist`
 
 ### `ffmpeg` missing
 
