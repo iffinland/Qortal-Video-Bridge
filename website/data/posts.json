@@ -1,0 +1,16 @@
+[
+  {
+    "id": "creator-local-first",
+    "videoId": "bridge-demo-1",
+    "tagline": "Workflow Demo",
+    "title": "From YouTube link to playable QDN video",
+    "contentPath": "./content/creator-local-first.html"
+  },
+  {
+    "id": "embed-and-chat",
+    "videoId": "bridge-demo-2",
+    "tagline": "Reuse Layer",
+    "title": "One published video, multiple reuse paths",
+    "contentPath": "./content/embed-and-chat.html"
+  }
+]

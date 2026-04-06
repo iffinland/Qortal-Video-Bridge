@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Video Gallery | VideoBox Bridge</title>
+    <meta
+      name="description"
+      content="Browse a gallery of QDN videos published with VideoBox Bridge."
+    />
+    <link rel="stylesheet" href="./assets/styles.css" />
+  </head>
+  <body data-page="gallery">
+    <header class="site-header">
+      <div class="container">
+        <a class="brand" href="./index.html">VideoBox Bridge</a>
+        <nav class="site-nav">
+          <a href="./index.html">Home</a>
+          <a href="./gallery.html" aria-current="page">Video Gallery</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="section">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Gallery</p>
+          <h1>Published video showcase</h1>
+          <p>
+            A simple front-facing gallery for videos prepared and published with
+            VideoBox Bridge.
+          </p>
+        </div>
+
+        <div id="gallery-grid" class="gallery-grid" aria-live="polite"></div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div>
+          <strong>VideoBox Bridge</strong>
+          <p>Simple website layer for demo posts and QDN video discovery.</p>
+        </div>
+        <div>
+          <a href="./index.html">Back to Home</a>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="./assets/app.js"></script>
+  </body>
+</html>

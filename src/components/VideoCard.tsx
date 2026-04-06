@@ -14,7 +14,7 @@ import {
   Typography,
 } from '@mui/material';
 import { formatDuration, useResourceStatus } from 'qapp-core';
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import type { VideoMetadata } from '../types/video';
 import {
   buildChatLink,
@@ -22,7 +22,10 @@ import {
   buildShareUrl,
   formatVideoDate,
 } from '../utils/video';
-import { VideoPlayerModal } from './VideoPlayerModal';
+
+const VideoPlayerModal = lazy(async () => ({
+  default: (await import('./VideoPlayerModal')).VideoPlayerModal,
+}));
 
 interface VideoCardProps {
   mode?: 'feed' | 'dashboard';
@@ -315,7 +318,15 @@ export const VideoCard = ({
         </CardContent>
       </Card>
 
-      <VideoPlayerModal open={playerOpen} onClose={() => setPlayerOpen(false)} video={video} />
+      <Suspense fallback={null}>
+        {playerOpen ? (
+          <VideoPlayerModal
+            open={playerOpen}
+            onClose={() => setPlayerOpen(false)}
+            video={video}
+          />
+        ) : null}
+      </Suspense>
       <Snackbar
         open={Boolean(feedback)}
         autoHideDuration={2600}

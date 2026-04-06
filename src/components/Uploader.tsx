@@ -19,7 +19,7 @@ import {
   Typography,
 } from '@mui/material';
 import { formatDuration } from 'qapp-core';
-import { useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { useHelperMonitor } from '../hooks/useHelperMonitor';
 import { useVideoPublish } from '../hooks/useVideoPublish';
 import type { VideoMetadata, VideoTranscodePreset } from '../types/video';
@@ -31,8 +31,11 @@ import {
   deleteVideoResources,
   publishVideoMetadataResource,
 } from '../utils/metadata';
-import { EditVideoDialog } from './EditVideoDialog';
 import { VideoCard } from './VideoCard';
+
+const EditVideoDialog = lazy(async () => ({
+  default: (await import('./EditVideoDialog')).EditVideoDialog,
+}));
 
 const extractVideoFingerprint = (value: string) => {
   try {
@@ -143,6 +146,8 @@ const Uploader = () => {
   const [deletingVideoId, setDeletingVideoId] = useState<string | null>(null);
   const [editingVideo, setEditingVideo] = useState<VideoMetadata | null>(null);
   const [deletedVideoIds, setDeletedVideoIds] = useState<Record<string, true>>({});
+  const [isLibraryReady, setIsLibraryReady] = useState(false);
+  const [isLoadingLibrary, setIsLoadingLibrary] = useState(false);
   const [page, setPage] = useState(1);
   const { canPublish, job, lastPublishedVideo, primaryName, publishVideo } =
     useVideoPublish();
@@ -209,6 +214,20 @@ const Uploader = () => {
     }
   }, [health?.defaultPreset]);
 
+  useEffect(() => {
+    if (!primaryName) {
+      setIsLibraryReady(false);
+      setIsLoadingLibrary(false);
+      return;
+    }
+
+    const timeout = window.setTimeout(() => {
+      setIsLibraryReady(true);
+    }, 500);
+
+    return () => window.clearTimeout(timeout);
+  }, [primaryName]);
+
   const handleCleanupHelper = async () => {
     try {
       const result = await cleanupHelper();
@@ -261,12 +280,18 @@ const Uploader = () => {
         return;
       }
 
+      if (!isLibraryReady) {
+        return;
+      }
+
+      setIsLoadingLibrary(true);
+
       try {
         const resources = (await qortalRequest({
           action: 'SEARCH_QDN_RESOURCES',
           service: 'JSON',
           includeMetadata: true,
-          limit: 100,
+          limit: 24,
           mode: 'LATEST',
           name: primaryName,
         })) as SearchResourceResult[];
@@ -315,6 +340,10 @@ const Uploader = () => {
         if (!cancelled) {
           setKnownVideos({});
         }
+      } finally {
+        if (!cancelled) {
+          setIsLoadingLibrary(false);
+        }
       }
     };
 
@@ -323,7 +352,7 @@ const Uploader = () => {
     return () => {
       cancelled = true;
     };
-  }, [primaryName]);
+  }, [isLibraryReady, primaryName]);
 
   const handleToggleVisibility = async (video: VideoMetadata) => {
     const nextVideo: VideoMetadata = {
@@ -698,6 +727,10 @@ const Uploader = () => {
               <Typography color="text.secondary">
                 Authenticate with a Qortal name to load your videos.
               </Typography>
+            ) : isLoadingLibrary ? (
+              <Typography color="text.secondary">
+                Loading your latest published videos...
+              </Typography>
             ) : visibleDashboardVideos.length === 0 ? (
               <Typography color="text.secondary">
                 No published videos found yet. Import your first YouTube video to populate this library.
@@ -760,12 +793,16 @@ const Uploader = () => {
         </Card>
       ) : null}
 
-      <EditVideoDialog
-        open={Boolean(editingVideo)}
-        video={editingVideo}
-        onClose={() => setEditingVideo(null)}
-        onSave={handleSaveVideoEdits}
-      />
+      <Suspense fallback={null}>
+        {editingVideo ? (
+          <EditVideoDialog
+            open={Boolean(editingVideo)}
+            video={editingVideo}
+            onClose={() => setEditingVideo(null)}
+            onSave={handleSaveVideoEdits}
+          />
+        ) : null}
+      </Suspense>
     </Stack>
   );
 };

@@ -1,0 +1,38 @@
+[
+  {
+    "id": "bridge-demo-1",
+    "title": "Bridge Demo Video One",
+    "category": "Featured Demo",
+    "excerpt": "A sample QDN video entry for the landing page showcase.",
+    "description": "Replace this entry with a real published QDN video once you choose the final showcase material. The website is already wired so you only need to update this JSON file.",
+    "publisher": "Qortal-Video-Bridge",
+    "duration": "00:01:00",
+    "visibility": "Public",
+    "thumbnailUrl": "",
+    "qdnPath": "/arbitrary/VIDEO/Qortal-Video-Bridge/replace-this-video-identifier"
+  },
+  {
+    "id": "bridge-demo-2",
+    "title": "Embed Example Video",
+    "category": "Embed Showcase",
+    "excerpt": "A second sample card showing how a video can appear in both a post and a gallery context.",
+    "description": "Use this slot for an embed-focused example video, such as a short clip that demonstrates the website and chat reuse path.",
+    "publisher": "Qortal-Video-Bridge",
+    "duration": "00:01:00",
+    "visibility": "Public",
+    "thumbnailUrl": "",
+    "qdnPath": "/arbitrary/VIDEO/Qortal-Video-Bridge/replace-this-second-video-identifier"
+  },
+  {
+    "id": "bridge-demo-3",
+    "title": "Gallery Detail Demo",
+    "category": "Gallery",
+    "excerpt": "A third sample item for the gallery grid and detail-page layout.",
+    "description": "This entry exists so the gallery page already has more than one card and feels like a real browsing surface from the start.",
+    "publisher": "Qortal-Video-Bridge",
+    "duration": "00:02:30",
+    "visibility": "Public",
+    "thumbnailUrl": "",
+    "qdnPath": "/arbitrary/VIDEO/Qortal-Video-Bridge/replace-this-third-video-identifier"
+  }
+]

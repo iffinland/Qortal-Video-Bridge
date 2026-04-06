@@ -8,9 +8,14 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
-import { ChangelogDialog } from './ChangelogDialog';
-import { SupportProjectDialog } from './SupportProjectDialog';
+import { lazy, Suspense, useState } from 'react';
+
+const ChangelogDialog = lazy(async () => ({
+  default: (await import('./ChangelogDialog')).ChangelogDialog,
+}));
+const SupportProjectDialog = lazy(async () => ({
+  default: (await import('./SupportProjectDialog')).SupportProjectDialog,
+}));
 
 export const AppFooter = () => {
   const [changelogOpen, setChangelogOpen] = useState(false);
@@ -66,12 +71,18 @@ export const AppFooter = () => {
         </Card>
       </Box>
 
-      <ChangelogDialog open={changelogOpen} onClose={() => setChangelogOpen(false)} />
-      <SupportProjectDialog
-        open={supportOpen}
-        onClose={() => setSupportOpen(false)}
-        onSuccess={() => setThankYouOpen(true)}
-      />
+      <Suspense fallback={null}>
+        {changelogOpen ? (
+          <ChangelogDialog open={changelogOpen} onClose={() => setChangelogOpen(false)} />
+        ) : null}
+        {supportOpen ? (
+          <SupportProjectDialog
+            open={supportOpen}
+            onClose={() => setSupportOpen(false)}
+            onSuccess={() => setThankYouOpen(true)}
+          />
+        ) : null}
+      </Suspense>
 
       <Snackbar
         open={thankYouOpen}

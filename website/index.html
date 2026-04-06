@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VideoBox Bridge</title>
+    <meta
+      name="description"
+      content="VideoBox Bridge is a local-first Qortal creator tool for importing YouTube videos into QDN."
+    />
+    <link rel="stylesheet" href="./assets/styles.css" />
+  </head>
+  <body data-page="home">
+    <header class="site-header">
+      <div class="container">
+        <a class="brand" href="./index.html">VideoBox Bridge</a>
+        <nav class="site-nav">
+          <a href="./index.html" aria-current="page">Home</a>
+          <a href="./gallery.html">Video Gallery</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero-grid">
+          <div>
+            <p class="eyebrow">Qortal Creator Tool</p>
+            <h1>Import YouTube videos into QDN with a local-first workflow.</h1>
+            <p class="lead">
+              VideoBox Bridge is built for Qortal creators who want a direct,
+              practical path from web2 video sources into QDN publishing.
+            </p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="./gallery.html">Open Gallery</a>
+              <a class="button button-secondary" href="#posts">See Demo Posts</a>
+            </div>
+          </div>
+
+          <aside class="hero-card">
+            <h2>How It Works</h2>
+            <ol class="inline-list ordered">
+              <li>Paste a YouTube URL into the app.</li>
+              <li>Choose a transcode preset.</li>
+              <li>Let the local helper prepare the video.</li>
+              <li>Approve the Qortal publish flow.</li>
+              <li>Reuse the result in posts, chat, and embeds.</li>
+            </ol>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container stats-grid">
+          <article class="stat-card">
+            <span class="stat-label">Primary Goal</span>
+            <strong>Creator-first video importing</strong>
+          </article>
+          <article class="stat-card">
+            <span class="stat-label">Publishing Model</span>
+            <strong>Local helper + QDN publish</strong>
+          </article>
+          <article class="stat-card">
+            <span class="stat-label">Reuse Paths</span>
+            <strong>Chat, embed, gallery, showcase</strong>
+          </article>
+        </div>
+      </section>
+
+      <section class="section section-alt" id="posts">
+        <div class="container">
+          <div class="section-head">
+            <p class="eyebrow">Showcase</p>
+            <h2>Demo posts with embedded QDN videos</h2>
+            <p>
+              This page is designed to act like a simple blog. Update
+              <code>website/data/posts.json</code> and <code>website/data/videos.json</code>
+              to publish your own featured examples.
+            </p>
+          </div>
+
+          <div id="featured-posts" class="post-stack" aria-live="polite"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div>
+          <strong>VideoBox Bridge</strong>
+          <p>
+            A robust local-first publishing workflow for Qortal video creators.
+          </p>
+        </div>
+        <div>
+          <a href="./gallery.html">Browse Gallery</a>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="./assets/app.js"></script>
+  </body>
+</html>
