@@ -9,6 +9,7 @@ import {
   Typography,
 } from '@mui/material';
 import { lazy, Suspense, useState } from 'react';
+import { PROJECT_WEBSITE_PATH } from '../config/project';
 
 const ChangelogDialog = lazy(async () => ({
   default: (await import('./ChangelogDialog')).ChangelogDialog,
@@ -44,6 +45,9 @@ export const AppFooter = () => {
               </Typography>
 
               <Stack direction="row" spacing={1} alignItems="center">
+                <Button component="a" href={PROJECT_WEBSITE_PATH} variant="text">
+                  Project Website
+                </Button>
                 <Typography variant="body2" color="text.secondary">
                   App v. 1.0
                 </Typography>
