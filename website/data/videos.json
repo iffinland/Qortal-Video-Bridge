@@ -1,38 +1,38 @@
 [
   {
     "id": "bridge-demo-1",
-    "title": "Bridge Demo Video One",
+    "title": "Cowboy Rave 🤠 Wild West Techno Party | Rodeo, Saloon & Banjo Beats",
     "category": "Featured Demo",
-    "excerpt": "A sample QDN video entry for the landing page showcase.",
-    "description": "Replace this entry with a real published QDN video once you choose the final showcase material. The website is already wired so you only need to update this JSON file.",
+    "excerpt": "A playful first showcase video demonstrating a finished QDN publish rendered directly inside the website.",
+    "description": "This entry is now wired to a real QDN video published with VideoBox Bridge. It works as a direct example of how a finished publish can be embedded into a simple static website page.",
     "publisher": "Qortal-Video-Bridge",
-    "duration": "00:01:00",
+    "duration": "",
     "visibility": "Public",
     "thumbnailUrl": "",
-    "qdnPath": "/arbitrary/VIDEO/Qortal-Video-Bridge/replace-this-video-identifier"
+    "qdnPath": "/arbitrary/VIDEO/Qortal-Video-Bridge/qvb-ukzwmmkzu7g-1775424379330"
   },
   {
     "id": "bridge-demo-2",
-    "title": "Embed Example Video",
+    "title": "Stellah - Õnnelik taas (dam-di-caater)",
     "category": "Embed Showcase",
-    "excerpt": "A second sample card showing how a video can appear in both a post and a gallery context.",
-    "description": "Use this slot for an embed-focused example video, such as a short clip that demonstrates the website and chat reuse path.",
+    "excerpt": "A second real QDN example showing how a published music clip can be reused in both post and gallery layouts.",
+    "description": "This showcase entry demonstrates the embed and gallery reuse path with a real published video. It is useful for showing visitors that the website layer is not a mockup but an actual playback surface for QDN-hosted media.",
     "publisher": "Qortal-Video-Bridge",
-    "duration": "00:01:00",
+    "duration": "",
     "visibility": "Public",
     "thumbnailUrl": "",
-    "qdnPath": "/arbitrary/VIDEO/Qortal-Video-Bridge/replace-this-second-video-identifier"
+    "qdnPath": "/arbitrary/VIDEO/Qortal-Video-Bridge/qvb-s0gflnwje4c-1775468008186"
   },
   {
     "id": "bridge-demo-3",
-    "title": "Gallery Detail Demo",
+    "title": "Autosuvila siirdamine üksi kahe autoga 🤩",
     "category": "Gallery",
-    "excerpt": "A third sample item for the gallery grid and detail-page layout.",
-    "description": "This entry exists so the gallery page already has more than one card and feels like a real browsing surface from the start.",
+    "excerpt": "A longer practical test video that helps demonstrate the app workflow beyond very short clips.",
+    "description": "This gallery entry gives the website a more practical long-form example and helps communicate that VideoBox Bridge is usable for more than micro clips. It also supports the detail-page layout with a real published asset.",
     "publisher": "Qortal-Video-Bridge",
-    "duration": "00:02:30",
+    "duration": "",
     "visibility": "Public",
     "thumbnailUrl": "",
-    "qdnPath": "/arbitrary/VIDEO/Qortal-Video-Bridge/replace-this-third-video-identifier"
+    "qdnPath": "/arbitrary/VIDEO/Qortal-Video-Bridge/qvb-pddxxeshshw-1775468583602"
   }
 ]
