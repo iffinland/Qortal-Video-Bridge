@@ -699,8 +699,7 @@ app.post(
     request: express.Request<unknown, unknown, DownloadVideoRequest>,
     response: express.Response<DownloadVideoResponse | { message: string }>
   ) => {
-    const { address, identifier, name, publicKey, url, visibility, transcodePreset } =
-      request.body;
+    const { address, identifier, name, publicKey, url, transcodePreset } = request.body;
 
     if (!url || !name || !address || !publicKey) {
       response.status(400).json({
@@ -783,7 +782,6 @@ app.post(
           description: ytMetadata.description || '',
           duration: ytMetadata.duration ?? null,
           identifier: resolvedIdentifier,
-          visibility: visibility === 'private' ? 'private' : 'public',
           thumbnailUrl: ytMetadata.thumbnail,
           channelName: ytMetadata.channel || ytMetadata.uploader,
           originalPublishDate: ytMetadata.upload_date || undefined,

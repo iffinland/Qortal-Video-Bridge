@@ -110,7 +110,6 @@ const buildFallbackVideo = (resource: SearchResourceResult): VideoMetadata => {
     description: fallbackDescription,
     duration: null,
     identifier: resource.identifier,
-    visibility: 'public',
     publisher: {
       name: resource.name,
       address: '',
@@ -143,7 +142,8 @@ const uniqueResources = (items: SearchResourceResult[]) => {
 };
 
 const searchAllResourcesByPrefix = async (
-  service: 'JSON' | 'VIDEO'
+  service: 'JSON' | 'VIDEO',
+  primaryName: string
 ): Promise<{ items: SearchResourceResult[]; pagesFetched: number }> => {
   const collected: SearchResourceResult[] = [];
   let offset = 0;
@@ -153,6 +153,7 @@ const searchAllResourcesByPrefix = async (
     const page = (await qortalRequest({
       action: 'SEARCH_QDN_RESOURCES',
       service,
+      name: primaryName,
       identifier: `${VIDEO_IDENTIFIER_PREFIX}-`,
       prefix: true,
       mode: 'ALL',
@@ -186,19 +187,38 @@ const searchAllResourcesByPrefix = async (
 };
 
 export const loadPublishedVideos = async (
-  _primaryName?: string
+  primaryName?: string
 ): Promise<{
   debug: VideoLibraryDebugInfo;
   videos: Record<string, VideoMetadata>;
 }> => {
-  const metadataSearch = await searchAllResourcesByPrefix('JSON');
-  const videoSearch = await searchAllResourcesByPrefix('VIDEO');
+  if (!primaryName?.trim()) {
+    return {
+      debug: {
+        metadataResourceCount: 0,
+        videoResourceCount: 0,
+        metadataVideoCount: 0,
+        metadataPagesFetched: 0,
+        videoPagesFetched: 0,
+        metadataResourceIdentifiers: [],
+        videoResourceIdentifiers: [],
+        finalVideoIdentifiers: [],
+      },
+      videos: {},
+    };
+  }
+
+  const normalizedPrimaryName = primaryName.trim();
+  const metadataSearch = await searchAllResourcesByPrefix('JSON', normalizedPrimaryName);
+  const videoSearch = await searchAllResourcesByPrefix('VIDEO', normalizedPrimaryName);
 
   const managedMetadataResources = metadataSearch.items.filter((resource) =>
-    resource.identifier.startsWith(`${VIDEO_IDENTIFIER_PREFIX}-`)
+    resource.identifier.startsWith(`${VIDEO_IDENTIFIER_PREFIX}-`) &&
+    resource.name === normalizedPrimaryName
   );
   const managedVideoResources = videoSearch.items.filter((resource) =>
-    resource.identifier.startsWith(`${VIDEO_IDENTIFIER_PREFIX}-`)
+    resource.identifier.startsWith(`${VIDEO_IDENTIFIER_PREFIX}-`) &&
+    resource.name === normalizedPrimaryName
   );
 
   const fetchedVideos = await Promise.allSettled(
@@ -217,6 +237,10 @@ export const loadPublishedVideos = async (
   const metadataVideoMap = fetchedVideos.reduce<Record<string, VideoMetadata>>(
     (accumulator, video) => {
       if (video.status !== 'fulfilled' || !video.value || !isManagedVideo(video.value)) {
+        return accumulator;
+      }
+
+      if (video.value.publisher.name !== normalizedPrimaryName) {
         return accumulator;
       }
 
@@ -255,7 +279,7 @@ export const loadPublishedVideos = async (
   );
 
   Object.values(metadataVideoMap).forEach((video) => {
-    if (!videos[video.identifier]) {
+    if (video.publisher.name === normalizedPrimaryName && !videos[video.identifier]) {
       videos[video.identifier] = video;
     }
   });

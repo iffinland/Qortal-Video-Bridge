@@ -166,7 +166,6 @@ export const useVideoPublish = () => {
 
   const publishVideo = async (
     url: string,
-    visibility: VideoMetadata['visibility'] = 'public',
     transcodePreset: VideoTranscodePreset = 'balanced'
   ) => {
     const trimmedUrl = url.trim();
@@ -204,7 +203,6 @@ export const useVideoPublish = () => {
       name: primaryName,
       identifier,
       transcodePreset,
-      visibility,
     };
 
     try {

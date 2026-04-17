@@ -1,6 +1,6 @@
 import type { VideoMetadata } from '../types/video';
 
-const STORAGE_KEY = 'videobox-live-public-videos';
+const STORAGE_KEY = 'videobox-live-videos';
 const EVENT_NAME = 'videobox-live-videos-updated';
 
 const isBrowser = () => typeof window !== 'undefined';
@@ -32,8 +32,7 @@ const writeCache = (videos: VideoMetadata[]) => {
   window.dispatchEvent(new CustomEvent(EVENT_NAME));
 };
 
-export const getLivePublicVideos = () =>
-  readCache().filter((video) => video.visibility === 'public');
+export const getLiveVideos = () => readCache();
 
 export const upsertLiveVideo = (video: VideoMetadata) => {
   const current = readCache();
@@ -44,10 +43,7 @@ export const upsertLiveVideo = (video: VideoMetadata) => {
       )
   );
 
-  if (video.visibility === 'public') {
-    filtered.unshift(video);
-  }
-
+  filtered.unshift(video);
   writeCache(filtered);
 };
 

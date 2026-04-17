@@ -179,7 +179,11 @@ const renderVideoDetail = async () => {
     return;
   }
 
-  const embedCode = `<video controls preload="metadata" src="${video.qdnPath}" style="width: 100%; max-width: 960px; border-radius: 12px; background: #000;"></video>`;
+  const embedCode = `<figure class="q-video-embed">
+  <figcaption style="font-family: Arial, sans-serif; font-size: 18px; color: #2c3e50; font-weight: bold; margin-bottom: 10px;">${escapeHtml(video.title)}</figcaption>
+  <video controls preload="metadata" src="${escapeHtml(video.qdnPath)}"${video.thumbnailUrl ? ` poster="${escapeHtml(video.thumbnailUrl)}"` : ''} style="width: 100%; max-width: 960px; border-radius: 12px; background: #000;"></video>
+  ${video.description || video.excerpt ? `<p style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #4b5563; margin: 10px 0 0;">${escapeHtml(video.description || video.excerpt || '')}</p>` : ''}
+</figure>`;
   const detailPath = createDetailPath(video.id);
 
   container.innerHTML = `

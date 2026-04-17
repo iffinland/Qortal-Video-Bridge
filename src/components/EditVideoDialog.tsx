@@ -6,9 +6,7 @@ import {
   DialogContent,
   DialogTitle,
   Stack,
-  Switch,
   TextField,
-  Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import type { VideoMetadata } from '../types/video';
@@ -101,28 +99,6 @@ export const EditVideoDialog = ({
             multiline
             minRows={4}
           />
-
-          <Stack direction="row" spacing={1.5} alignItems="center">
-            <Switch
-              checked={draft?.visibility === 'public'}
-              onChange={(event) =>
-                setDraft((current) =>
-                  current
-                    ? {
-                        ...current,
-                        visibility: event.target.checked ? 'public' : 'private',
-                      }
-                    : current
-                )
-              }
-            />
-            <Typography variant="body2">
-              {draft?.visibility === 'public'
-                ? 'Public metadata'
-                : 'Private to dashboard'}
-            </Typography>
-          </Stack>
-
           {error ? <Alert severity="error">{error}</Alert> : null}
         </Stack>
       </DialogContent>

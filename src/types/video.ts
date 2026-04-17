@@ -5,7 +5,6 @@ export interface VideoMetadata {
   description: string;
   duration: number | null;
   identifier: string;
-  visibility: 'public' | 'private';
   thumbnailUrl?: string;
   channelName?: string;
   originalPublishDate?: string;
@@ -38,7 +37,6 @@ export interface DownloadVideoRequest {
   publicKey: string;
   identifier?: string;
   transcodePreset?: VideoTranscodePreset;
-  visibility?: VideoMetadata['visibility'];
 }
 
 export interface DownloadVideoResponse {

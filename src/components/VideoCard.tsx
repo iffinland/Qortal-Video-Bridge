@@ -29,9 +29,7 @@ interface VideoCardProps {
   mode?: 'feed' | 'dashboard';
   onDelete?: (video: VideoMetadata) => Promise<void> | void;
   onEdit?: (video: VideoMetadata) => void;
-  onToggleVisibility?: (video: VideoMetadata) => Promise<void> | void;
   deleteBusy?: boolean;
-  visibilityBusy?: boolean;
   video: VideoMetadata;
 }
 
@@ -56,7 +54,7 @@ const canUseThumbnail = (value?: string) => {
 
   try {
     const url = new URL(value);
-    return url.origin === window.location.origin;
+    return url.protocol === 'https:' || url.protocol === 'http:';
   } catch {
     return false;
   }
@@ -66,10 +64,8 @@ export const VideoCard = ({
   mode = 'feed',
   onDelete,
   onEdit,
-  onToggleVisibility,
   deleteBusy = false,
   video,
-  visibilityBusy = false,
 }: VideoCardProps) => {
   const [playerOpen, setPlayerOpen] = useState(false);
   const [feedback, setFeedback] = useState<{
@@ -190,13 +186,6 @@ export const VideoCard = ({
             {video.duration ? (
               <Chip size="small" label={formatDuration(video.duration)} />
             ) : null}
-            {mode === 'dashboard' ? (
-              <Chip
-                size="small"
-                color={video.visibility === 'public' ? 'info' : 'warning'}
-                label={video.visibility === 'public' ? 'Public' : 'Private'}
-              />
-            ) : null}
           </Stack>
         </Box>
 
@@ -252,20 +241,6 @@ export const VideoCard = ({
               <Button size="small" onClick={handleCopyChatLink}>
                 Post to CHAT
               </Button>
-
-              {mode === 'dashboard' && onToggleVisibility ? (
-                <Button
-                  size="small"
-                  onClick={() => onToggleVisibility(video)}
-                  disabled={visibilityBusy}
-                >
-                  {visibilityBusy
-                    ? 'Saving...'
-                    : video.visibility === 'public'
-                      ? 'Make Private'
-                      : 'Publish Publicly'}
-                </Button>
-              ) : null}
 
               {mode === 'dashboard' && onEdit ? (
                 <Button size="small" onClick={() => onEdit(video)}>
